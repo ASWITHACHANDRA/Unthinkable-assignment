@@ -1,0 +1,6 @@
+{
+  "name": "Smart Resume Screener",
+  "description": "AI-powered resume screener that parses resumes, extracts skills and experience, matches against job descriptions using LLM evaluation, and outputs ranked shortlists.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

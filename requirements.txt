@@ -1,0 +1,10 @@
+# Smart Resume Screener - Python Dependencies
+Flask==3.0.3
+Werkzeug==3.0.3
+PyPDF2==3.0.1
+docx2txt==0.8
+tinydb==4.8.0
+google-genai==0.2.2
+python-dotenv==1.0.1
+pydantic==2.8.2
+pytest==8.3.2

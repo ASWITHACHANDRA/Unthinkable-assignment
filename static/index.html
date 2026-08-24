@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Resume Screener - Bento Grid</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+</head>
+<body class="bento-body">
+  <div id="app-container" class="bento-app-container">
+    
+    <!-- Top Header Bento Bar -->
+    <header class="bento-header" id="app-header">
+      <div class="header-brand-wrap">
+        <div class="bento-brand-logo" id="brand-logo">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="bento-title">Smart Resume Screener</h1>
+          <p class="bento-subtitle">CANDIDATE INTELLIGENCE & BENTO ASSESSMENT INTERFACE</p>
+        </div>
+      </div>
+
+      <div class="header-meta-actions">
+        <div class="db-status-badge">
+          <span class="db-status-label">DB STATUS</span>
+          <span class="db-status-value">
+            <span class="status-pulse-dot"></span>
+            TINYDB_SYNCED
+          </span>
+        </div>
+        <div class="header-actions">
+          <button id="btn-seed-sample" class="bento-btn bento-btn-secondary" title="Load sample benchmark assessment candidates and job description">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Load Sample Data</span>
+          </button>
+          <button id="btn-new-screening" class="bento-btn bento-btn-dark">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            <span>New Screening</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Bento Grid Layout -->
+    <main class="bento-grid-layout">
+
+      <!-- Left Bento Column (Role & Upload Controls) -->
+      <div class="bento-col-left">
+
+        <!-- Bento Card: Role Definition -->
+        <section id="screening-form-card" class="bento-card bento-role-card">
+          <div class="bento-card-header">
+            <div class="bento-tag-wrap">
+              <span class="bento-tag">Active Assessment</span>
+              <span id="jd-ref-badge" class="bento-tag-muted">JD-REF: LIVE</span>
+            </div>
+            <div class="preset-dropdown-wrap">
+              <label for="sample-jd-select" class="sr-only">Sample Job Preset</label>
+              <select id="sample-jd-select" class="bento-select-sm">
+                <option value="">-- Load Sample Job Preset --</option>
+                <option value="fullstack">Senior Full-Stack Engineer (Python & React)</option>
+                <option value="aiml">AI / LLM Systems Engineer</option>
+                <option value="dataeng">Lead Data & Backend Engineer</option>
+              </select>
+            </div>
+          </div>
+
+          <form id="upload-form" class="bento-form" enctype="multipart/form-data">
+            
+            <div class="bento-form-group">
+              <label for="job-title-input" class="bento-label">Position Title</label>
+              <input 
+                type="text" 
+                id="job-title-input" 
+                name="job_title" 
+                class="bento-input" 
+                placeholder="e.g. Senior Full-Stack Engineer"
+                value="Senior Full-Stack Engineer"
+                required 
+              />
+            </div>
+
+            <div class="bento-form-group">
+              <div class="label-row">
+                <label for="job-desc-input" class="bento-label">Job Description & Requirements</label>
+                <span id="jd-char-count" class="bento-char-count">0 chars</span>
+              </div>
+              <textarea 
+                id="job-desc-input" 
+                name="job_description" 
+                class="bento-textarea" 
+                rows="6" 
+                placeholder="Paste responsibilities, required skills (Python, Flask, React), and criteria..."
+                required
+              >Job Title: Senior Full-Stack Engineer (Python & React)
+Requirements:
+- 4+ years professional software development experience.
+- Strong proficiency in Python with web frameworks like Flask, FastAPI, or Django.
+- Solid experience building interactive dashboards using React and TypeScript.
+- Hands-on experience integrating LLM APIs and prompt engineering workflows.
+- Practical experience with unit testing (Pytest), Git, and CI/CD.
+- Bachelor's degree in Computer Science or equivalent practical experience.</textarea>
+            </div>
+
+            <!-- Bento Dropzone Box -->
+            <div class="bento-form-group">
+              <label class="bento-label">Upload Resumes (PDF, DOCX, TXT)</label>
+              <div id="dropzone" class="bento-dropzone">
+                <input 
+                  type="file" 
+                  id="resume-file-input" 
+                  name="resumes" 
+                  multiple 
+                  accept=".pdf,.docx,.doc,.txt"
+                  class="file-input-hidden" 
+                />
+                <div class="dropzone-inner">
+                  <div class="dropzone-icon-circle">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                  </div>
+                  <p class="dropzone-primary-text"><strong>Drop Resumes Here</strong> or click to browse</p>
+                  <p class="dropzone-subtext">Supports PDF, DOCX, TXT (Max 10MB per file)</p>
+                </div>
+              </div>
+
+              <!-- Selected Files Container -->
+              <div id="selected-files-container" class="bento-selected-files" style="display: none;">
+                <div class="selected-files-header">
+                  <span id="selected-files-count" class="selected-count-text">0 files selected</span>
+                  <button type="button" id="btn-clear-files" class="bento-btn-clear">Clear All</button>
+                </div>
+                <ul id="selected-files-list" class="bento-file-list"></ul>
+              </div>
+            </div>
+
+            <!-- Submit Button Bento Action -->
+            <div class="bento-submit-wrap">
+              <button type="submit" id="btn-submit-screening" class="bento-btn bento-btn-submit">
+                <span class="btn-text-content">Screen & Rank Candidates</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </button>
+              <p class="submit-note">Single-call LLM analysis: Extraction + Calibrated 1-10 Scoring</p>
+            </div>
+          </form>
+
+          <!-- Processing Overlay Modal -->
+          <div id="processing-overlay" class="processing-overlay" style="display: none;">
+            <div class="bento-spinner-card">
+              <div class="bento-spinner"></div>
+              <h3 id="progress-title" class="progress-title">Processing Resumes...</h3>
+              <p id="progress-desc" class="progress-desc">Parsing documents and performing single-call LLM evaluation</p>
+              <div class="progress-steps">
+                <div class="step-item active" id="step-parse">
+                  <span class="step-dot"></span> 1. Extracting raw text from files
+                </div>
+                <div class="step-item" id="step-llm">
+                  <span class="step-dot"></span> 2. Evaluating fit & computing 1-10 score with LLM
+                </div>
+                <div class="step-item" id="step-db">
+                  <span class="step-dot"></span> 3. Persisting in TinyDB and sorting shortlist
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bento Metrics & Skill Distribution Tile -->
+        <div class="bento-subgrid">
+          
+          <!-- Indigo Bento Metrics Tile -->
+          <div class="bento-card bento-card-indigo">
+            <div class="bento-indigo-header">
+              <div id="metric-total-badge" class="bento-indigo-icon">0</div>
+              <span class="bento-indigo-tag">METRICS</span>
+            </div>
+            <div class="bento-indigo-body">
+              <h3 class="bento-indigo-title">Screening Intelligence</h3>
+              <div class="bento-indigo-stats-row">
+                <div>
+                  <span class="stat-num" id="stat-high-matches">0</span>
+                  <span class="stat-lbl">Top Fits (>=8)</span>
+                </div>
+                <div>
+                  <span class="stat-num" id="stat-avg-score">--</span>
+                  <span class="stat-lbl">Avg Score</span>
+                </div>
+              </div>
+            </div>
+            <div class="bento-progress-bar-wrap">
+              <div class="bento-progress-bar" id="screening-progress-fill" style="width: 100%;"></div>
+            </div>
+          </div>
+
+          <!-- Skill Distribution Bento Tile -->
+          <div class="bento-card bento-card-skills">
+            <div class="skills-card-header">
+              <span class="bento-micro-label">EXTRACTED SKILL DENSITY</span>
+              <span class="skills-live-dot">LIVE</span>
+            </div>
+            <div class="bento-skill-bars">
+              <div class="bento-bar-col">
+                <div class="bento-bar-fill" id="bar-py" style="height: 85%;"></div>
+                <span class="bento-bar-label">PY</span>
+              </div>
+              <div class="bento-bar-col">
+                <div class="bento-bar-fill" id="bar-js" style="height: 70%;"></div>
+                <span class="bento-bar-label">JS/TS</span>
+              </div>
+              <div class="bento-bar-col">
+                <div class="bento-bar-fill highlight" id="bar-ai" style="height: 95%;"></div>
+                <span class="bento-bar-label">AI/LLM</span>
+              </div>
+              <div class="bento-bar-col">
+                <div class="bento-bar-fill" id="bar-ops" style="height: 50%;"></div>
+                <span class="bento-bar-label">TEST</span>
+              </div>
+              <div class="bento-bar-col">
+                <div class="bento-bar-fill" id="bar-db" style="height: 65%;"></div>
+                <span class="bento-bar-label">SQL</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- Right Bento Column (Shortlist & Candidate Rankings) -->
+      <div class="bento-col-right">
+
+        <!-- Shortlist Bento Card -->
+        <section class="bento-card bento-shortlist-card" id="shortlist-section">
+          
+          <!-- Shortlist Header -->
+          <div class="bento-shortlist-header">
+            <div>
+              <div class="shortlist-title-row">
+                <h2 id="active-job-title" class="bento-shortlist-heading">Candidate Shortlist</h2>
+                <span id="candidate-count-badge" class="bento-count-pill">0 candidates</span>
+              </div>
+              <p id="active-job-subtitle" class="bento-shortlist-subheading">Sorted by match score descending (10 = Highest Match)</p>
+            </div>
+
+            <div class="bento-screening-switcher">
+              <span class="status-indicator">
+                <span class="status-dot"></span>
+                <span class="status-text">LLM SCORING COMPLETE</span>
+              </span>
+              <div class="job-switcher-box">
+                <select id="job-selector" class="bento-select">
+                  <option value="">Loading job screenings...</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bento Filter & Search Toolbar -->
+          <div class="bento-toolbar">
+            <div class="bento-search-wrap">
+              <svg class="bento-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input 
+                type="text" 
+                id="search-input" 
+                class="bento-search-input" 
+                placeholder="Search candidate name, skills (Python, React, Flask)..." 
+              />
+            </div>
+
+            <div class="bento-filter-controls">
+              <div class="bento-filter-item">
+                <label for="score-filter" class="bento-filter-label">Min Score:</label>
+                <select id="score-filter" class="bento-select-filter">
+                  <option value="0">All Scores (1-10)</option>
+                  <option value="8">Score >= 8 (Strong Fit)</option>
+                  <option value="6">Score >= 6 (Moderate Fit)</option>
+                  <option value="4">Score >= 4 (Partial Fit)</option>
+                </select>
+              </div>
+
+              <div class="bento-toggle-group">
+                <button id="btn-expand-all" class="bento-btn-toggle" title="Expand all candidate justifications">
+                  Expand All
+                </button>
+                <button id="btn-collapse-all" class="bento-btn-toggle" title="Collapse all details">
+                  Collapse All
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Skipped Files Banner -->
+          <div id="failed-files-banner" class="bento-alert-banner" style="display: none;">
+            <div class="bento-alert-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="bento-alert-content">
+              <h4>Some files could not be parsed:</h4>
+              <ul id="failed-files-list"></ul>
+            </div>
+          </div>
+
+          <!-- Candidate Results Bento Table -->
+          <div class="bento-table-container">
+            <table class="bento-table" id="candidate-table">
+              <thead>
+                <tr>
+                  <th class="col-rank">Rank</th>
+                  <th class="col-name">Candidate Name</th>
+                  <th class="col-score">Fit Score</th>
+                  <th class="col-summary">Experience Summary</th>
+                  <th class="col-skills">Core Skills</th>
+                  <th class="col-actions">Analysis</th>
+                </tr>
+              </thead>
+              <tbody id="candidate-table-body">
+                <tr class="empty-row">
+                  <td colspan="6" class="empty-cell">
+                    <div class="bento-empty-state">
+                      <div class="empty-icon-box">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                          <circle cx="12" cy="14" r="3"></circle>
+                        </svg>
+                      </div>
+                      <h3>No Candidates Screened Yet</h3>
+                      <p>Upload candidate resumes or click <strong>"Load Sample Data"</strong> to view the Bento shortlist ranking.</p>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </section>
+
+      </div>
+
+    </main>
+
+    <!-- Bento Footer -->
+    <footer class="bento-footer">
+      <div class="bento-footer-content">
+        <span>Smart Resume Screener • Bento Grid Design System</span>
+        <span>Python &amp; TinyDB Backend • Google Gemini API Single-Call Evaluation</span>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
